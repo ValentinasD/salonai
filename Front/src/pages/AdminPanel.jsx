@@ -9,16 +9,16 @@ export default function AdminPanel() {
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:5000/api/auth/logout", {}, {
+      await axios.post("http://localhost:3000/api/auth/logout", {}, {
         withCredentials: true,
       });
       logout(); // ištrinti user iš context
       navigate("/"); // grįžti į home page
     } catch (err) {
       console.error("Atsijungimo klaida:", err);
-      // Даже если запрос неудачен, всё равно разлогиниваем локально
+      
       logout();
-      navigate("/"); // перенаправляем на домашнюю страницу
+      navigate("/"); 
     }
   };
 

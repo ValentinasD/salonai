@@ -21,7 +21,7 @@ export const registerUser = async (req, res) => {
     // Slaptažodžio hash'inimas
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Vartotojo sukūrimas (роль по умолчанию 'user', если не указана)
+    // Vartotojo sukūrimas role yra 'user' jei nenurodyta
     const userRole = role || 'user';
     const newUser = await createUser(username, email, hashedPassword, userRole);
 

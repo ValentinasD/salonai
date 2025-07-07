@@ -9,6 +9,7 @@ import AdminPanel from "./pages/AdminPanel";
 import UsersPage from "./pages/admin/UsersPage";
 import SalonPage from "./pages/admin/SalonPage";
 import HomePageComponent from "./pages/Home";
+import MyReservationsPage from "./pages/MyReservationsPage";
 
 
 const App = () => {
@@ -26,6 +27,16 @@ const App = () => {
       <Route path="/not-found" element={<NotFound />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      
+      {/* Маршрут для резервирований пользователя */}
+      <Route
+        path="/my-reservations"
+        element={
+          <ProtectedRoute>
+            <MyReservationsPage />
+          </ProtectedRoute>
+        }
+      />
 
       {/* Apsaugotos maršruto vietos */}
       <Route

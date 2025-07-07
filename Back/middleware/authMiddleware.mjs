@@ -29,3 +29,6 @@ export const authorizeAdmin = (req, res, next) => {
   }
   next();
 };
+
+// 🔐 Alias для requireAdmin
+export const requireAdmin = authorizeAdmin;

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import ReservationModal from '../components/ReservationModal';
 
 // importojam nuotraukas
 import salon1 from '../image/salon1.jpeg';
@@ -19,6 +20,8 @@ function HomePageComponent() {
   const [salons, setSalons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [showReservationModal, setShowReservationModal] = useState(false);
+  const [selectedSalon, setSelectedSalon] = useState(null);
 
   // funkcija, kuri grąžina atitinkamą nuotrauką pagal saloną
   // Jei salonas yra SPA, grąžina SPA nuotrauką, kitu atveju grąžina bendrą nuotrauką
@@ -54,6 +57,21 @@ function HomePageComponent() {
     navigate('/login');
   };
 
+  const handleReservation = (salon) => {
+    if (!user) {
+      alert('Rezervavimui reikia prisijungti prie sistemos');
+      navigate('/login');
+      return;
+    }
+    setSelectedSalon(salon);
+    setShowReservationModal(true);
+  };
+
+  const closeReservationModal = () => {
+    setShowReservationModal(false);
+    setSelectedSalon(null);
+  };
+
   const filteredSalons = salons.filter(salon =>
     salon.salon.toLowerCase().includes(searchTerm.toLowerCase()) ||
     salon.category.toLowerCase().includes(searchTerm.toLowerCase())
@@ -65,6 +83,12 @@ function HomePageComponent() {
       {/* ✅ Vartotojo info – dešinėje */}
       {user && (
         <div className="fixed top-4 right-4 z-50 flex items-center space-x-4">
+          <NavLink
+            to="/my-reservations"
+            className="bg-green-600 text-white px-3 py-2 rounded-md hover:bg-green-700 transition-colors shadow-lg font-medium"
+          >
+            📅 Mano rezervacijos
+          </NavLink>
           {user.role === 'admin' && (
             <NavLink
               to="/admin"
@@ -175,9 +199,15 @@ function HomePageComponent() {
                       </div>
                       
                       <div className="border-t pt-3">
-                        <div className="flex items-center justify-between">
-                          <button className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition-colors">
-                            Daugiau info
+                        <div className="flex items-center justify-between space-x-2">
+                          <button 
+                            onClick={() => handleReservation(salon)}
+                            className="flex-1 bg-green-600 text-white px-3 py-2 rounded text-sm hover:bg-green-700 transition-colors font-medium"
+                          >
+                            📅 Rezervuoti
+                          </button>
+                          <button className="bg-blue-600 text-white px-3 py-2 rounded text-sm hover:bg-blue-700 transition-colors">
+                            ℹ️ Info
                           </button>
                         </div>
                       </div>
@@ -197,6 +227,13 @@ function HomePageComponent() {
           )}
         </div>
       </main>
+
+      {/* Modalinis langas rezervacija */}
+      <ReservationModal
+        salon={selectedSalon}
+        isOpen={showReservationModal}
+        onClose={closeReservationModal}
+      />
     </div>
   );
 }

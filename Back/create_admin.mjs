@@ -5,20 +5,20 @@ async function createAdmin() {
   try {
     const adminEmail = 'admin@test.com';
     
-    // Проверяем, есть ли уже админ
+    // tikrinam ar adminas jau egzistuoja
     const existingAdmin = await getUserByEmail(adminEmail);
     if (existingAdmin) {
-      console.log('✅ Админ уже существует:', existingAdmin.username);
+      console.log('✅ Admin jau yra:', existingAdmin.username);
       return;
     }
 
-    // Создаем админа
+    // sukuriam admina
     const hashedPassword = await bcrypt.hash('admin123', 10);
     const admin = await createUser('admin', adminEmail, hashedPassword, 'admin');
     
-    console.log('✅ Админ создан успешно:', admin);
+    console.log('✅ Admin sukurtas sekmingai :', admin);
   } catch (error) {
-    console.error('❌ Ошибка при создании админа:', error);
+    console.error('❌ Klaida kuriant admina:', error);
   }
 }
 
