@@ -3,9 +3,11 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import pool from './DB_config/db.mjs';
 import { createUserTable } from './DB_config/user_table.mjs';
+import { createSalonTable } from './DB_config/salonai.mjs';
 
 import authRoutes from './routers/authRoutes.mjs';
 import userRouter from './routers/userRoutes.mjs';
+import salonRouter from './routers/salonRoutes.mjs';
 
 dotenv.config();
 
@@ -22,6 +24,7 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRouter);
+app.use('/api/salons', salonRouter);
 
 // 🚀 Start SERVER
 const startServer = async () => {
@@ -30,6 +33,7 @@ const startServer = async () => {
     console.log('✅ PostgreSQL prisijungta sėkmingai:', result.rows[0].now);
 
     await createUserTable();
+    await createSalonTable();
 
     const PORT = process.env.PORT || 5000;
     app.listen(PORT, () => {

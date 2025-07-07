@@ -7,6 +7,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AdminPanel from "./pages/AdminPanel";
 import UsersPage from "./pages/admin/UsersPage";
+import SalonPage from "./pages/admin/SalonPage";
 import HomePageComponent from "./pages/Home";
 
 
@@ -35,7 +36,9 @@ const App = () => {
           </ProtectedRoute>
         }
       >
+        <Route index element={<Navigate to="users" replace />} />
         <Route path="users" element={<UsersPage />} />
+        <Route path="salons" element={<SalonPage />} />
       </Route>
       {/* <Route
         path="/profile"

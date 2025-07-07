@@ -9,7 +9,7 @@ export default function AdminPanel() {
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:3000/api/auth/logout", {}, {
+      await axios.post("http://localhost:5000/api/auth/logout", {}, {
         withCredentials: true,
       });
       logout(); // ištrinti user iš context
@@ -30,7 +30,22 @@ export default function AdminPanel() {
           <h2 className="text-2xl font-bold mb-6">Admin Panelė</h2>
           <p className="text-sm text-yellow-300 mb-4">Prisijungęs: <b>{user?.username}</b></p>
           <nav className="space-y-3">
-            <NavLink to="users" className="block hover:text-yellow-300">👤 Vartotojai</NavLink>
+            <NavLink 
+              to="/admin/users" 
+              className={({ isActive }) => 
+                `block hover:text-yellow-300 ${isActive ? 'text-yellow-300 font-bold' : ''}`
+              }
+            >
+              👤 Vartotojai
+            </NavLink>
+            <NavLink 
+              to="/admin/salons" 
+              className={({ isActive }) => 
+                `block hover:text-yellow-300 ${isActive ? 'text-yellow-300 font-bold' : ''}`
+              }
+            >
+              🏢 Salonai
+            </NavLink>
           </nav>
         </div>
 
