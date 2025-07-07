@@ -40,12 +40,12 @@ export const getAllReservations = async (req, res) => {
 
     res.status(200).json(result.rows);
   } catch (err) {
-    console.error('❌ klaida gaunant rezervacija :', err);
-    res.status(500).json({ message: 'serverio klaida.' });
+    console.error('❌ Klaida gaunant rezervacijas:', err);
+    res.status(500).json({ message: 'Serverio klaida.' });
   }
 };
 
-// 📝 sukurti nauja rezervacija 
+// 📝 sukurti naują rezervaciją 
 export const createReservation = async (req, res) => {
   const userId = req.user.id;
   const { salon_id, service_type, reservation_date, reservation_time, duration, notes } = req.body;
@@ -108,7 +108,7 @@ export const createReservation = async (req, res) => {
   }
 };
 
-// ✏️ Обновить резервирование
+// ✏️ Atnaujinti rezervaciją
 export const updateReservation = async (req, res) => {
   const { id } = req.params;
   const userId = req.user.id;
@@ -125,7 +125,8 @@ export const updateReservation = async (req, res) => {
     }
 
     const existing = await pool.query(checkQuery, checkParams);
-    if (existing.rows.length === 0) {Rezervacija nerasta .' });
+    if (existing.rows.length === 0) {
+      return res.status(404).json({ message: 'Rezervacija nerasta.' });
     }
 
     // Jei atnaujinamos data/ laikas, tikriname, ar laikas laisvas
@@ -138,7 +139,7 @@ export const updateReservation = async (req, res) => {
 
       if (timeCheck.rows.length > 0) {
         return res.status(409).json({ 
-          message: '^itas laikas jau rezervuotas.' 
+          message: 'Šis laikas jau rezervuotas.' 
         });
       }
     }
@@ -157,22 +158,22 @@ export const updateReservation = async (req, res) => {
     `, [service_type, reservation_date, reservation_time, duration, notes, status, id]);
 
     res.status(200).json({
-      message: 'Rezervacija sekmingai atnaujinta.',
+      message: 'Rezervacija sėkmingai atnaujinta.',
       reservation: result.rows[0]
     });
   } catch (err) {
-    console.error('❌ Klaida vigdant rezervacijos atnaujinima :', err);
-    res.status(500).json({ message: 'serverio klaida .' });
+    console.error('❌ Klaida atnaujinant rezervaciją:', err);
+    res.status(500).json({ message: 'Serverio klaida.' });
   }
 };
 
-// 🗑️ i6trinti rezervacija 
+// 🗑️ ištrinti rezervaciją 
 export const deleteReservation = async (req, res) => {
   const { id } = req.params;
   const userId = req.user.id;
 
   try {
-    //tikriname, kad rezervacija priklauso vartotojui arba vartotojas yra admin
+    // tikriname, kad rezervacija priklauso vartotojui arba vartotojas yra admin
     let checkQuery = 'SELECT * FROM reservations WHERE id = $1';
     let checkParams = [id];
 
@@ -189,26 +190,26 @@ export const deleteReservation = async (req, res) => {
     await pool.query('DELETE FROM reservations WHERE id = $1', [id]);
 
     res.status(200).json({ 
-      message: 'Rezervacija sekmingai pa6alinta .' 
+      message: 'Rezervacija sėkmingai pašalinta.' 
     });
   } catch (err) {
-    console.error('❌ Klaida i6tinant rezervacija:', err);
-    res.status(500).json({ message: 'serverio klaida.' });
+    console.error('❌ Klaida ištrinant rezervaciją:', err);
+    res.status(500).json({ message: 'Serverio klaida.' });
   }
 };
 
-// 📊 gauti laikus 
+// 📊 gauti laisvu laiku 
 export const getAvailableSlots = async (req, res) => {
   const { salon_id, date } = req.query;
 
   if (!salon_id || !date) {
     return res.status(400).json({ 
-      message: 'ID салона и дата обязательны.' 
+      message: 'Salono ID ir data yra privalomi.' 
     });
   }
 
   try {
-    // 
+    // Gaunami užimti laikai
     const bookedSlots = await pool.query(`
       SELECT reservation_time, duration 
       FROM reservations 
@@ -217,20 +218,20 @@ export const getAvailableSlots = async (req, res) => {
       ORDER BY reservation_time
     `, [salon_id, date]);
 
-   
+    // Generuojami visi galimi laikai
     const allSlots = [];
     for (let hour = 9; hour < 18; hour++) {
       allSlots.push(`${hour.toString().padStart(2, '0')}:00`);
       allSlots.push(`${hour.toString().padStart(2, '0')}:30`);
     }
 
-    
+    // Filtruojami laisvi laikai
     const availableSlots = allSlots.filter(slot => {
       return !bookedSlots.rows.some(booked => {
         const bookedTime = booked.reservation_time;
         const bookedDuration = booked.duration;
         
-        // laiku konfliktu patikra
+        // Laikų konfliktų patikra
         const slotTime = new Date(`2000-01-01T${slot}:00`);
         const bookedStart = new Date(`2000-01-01T${bookedTime}`);
         const bookedEnd = new Date(bookedStart.getTime() + bookedDuration * 60000);
@@ -246,7 +247,7 @@ export const getAvailableSlots = async (req, res) => {
       bookedSlots: bookedSlots.rows
     });
   } catch (err) {
-    console.error('❌ Klaida gaunant laikus:', err);
-    res.status(500).json({ message: 'serverio klaida .' });
+    console.error('❌ Klaida gaunant laisvus laikus:', err);
+    res.status(500).json({ message: 'Serverio klaida.' });
   }
 };
