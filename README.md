@@ -247,10 +247,6 @@ Salonai/
 4. **Push'inti** į branch'ą
 5. **Sukurti** Pull Request
 
-## 📞 Kontaktai
-
-Jei turite klausimų ar problemų, susisiekite su projekto kūrėjais.
-
 ## 📄 Licencija
 
 Šis projektas yra skirtas edukaciniams tikslams.
